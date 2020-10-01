@@ -36,7 +36,7 @@ func main() {
 	sessionName := "goquestsession"
 	router := gin.Default()
 	// init settings for github auth
-	github.Setup(redirectURL, credFile, scopes, secret)
+	github.Setup(redirectURL, "/login", credFile, scopes, secret)
 	router.Use(github.Session(sessionName))
 
 	router.GET("/login", github.LoginHandler)
