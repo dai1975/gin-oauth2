@@ -34,6 +34,23 @@ var (
 	store    sessions.CookieStore
 )
 
+func contains(a []string, target string) bool {
+	for _, i := range a {
+		if i == target {
+			return true
+		}
+	}
+	return false
+}
+func containsAny(a []string, targets []string) bool {
+	for _, t := range targets {
+		if contains(a, t) {
+			return true
+		}
+	}
+	return false
+}
+
 func randToken() string {
 	b := make([]byte, 32)
 	if _, err := rand.Read(b); err != nil {
@@ -80,11 +97,12 @@ func GetLoginURL(state string) string {
 }
 
 type AuthUser struct {
-	Login   string `json:"login"`
-	Name    string `json:"name"`
-	Email   string `json:"email"`
-	Company string `json:"company"`
-	URL     string `json:"url"`
+	Login         string   `json:"login"`
+	Name          string   `json:"name"`
+	Email         string   `json:"email"`
+	Company       string   `json:"company"`
+	URL           string   `json:"url"`
+	Organizations []string `json:"organizations"`
 }
 
 func init() {
@@ -132,12 +150,26 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
+		glog.Infof("[gin-oauth2] scopes: %s\n", conf.Scopes)
+		var orgs []string
+		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
+			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Name, nil)
+			if err != nil {
+				ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
+				return
+			}
+			orgs = make([]string, len(orgs_))
+			for i, o := range orgs_ {
+				orgs[i] = *o.Name
+			}
+		}
 
 		// save userinfo, which could be used in Handlers
 		authUser = AuthUser{
-			Login: *user.Login,
-			Name:  *user.Name,
-			URL:   *user.URL,
+			Login:         *user.Login,
+			Name:          *user.Name,
+			URL:           *user.URL,
+			Organizations: orgs,
 		}
 		ctx.Set("user", authUser)
 
