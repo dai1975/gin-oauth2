@@ -164,7 +164,8 @@ func Auth() gin.HandlerFunc {
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
 			fmt.Printf("[Gin-OAuth] get orgs...scoped\n")
-			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Login, nil)
+			//orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Login, nil)
+			orgs_, _, err := client.Organizations.List(oauth2.NoContext, "", nil)
 			if err != nil {
 				ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get organizations: %v", err))
 				return
