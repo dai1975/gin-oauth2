@@ -27,11 +27,11 @@ type Credentials struct {
 }
 
 var (
-	conf   *oauth2.Config
-	cred   Credentials
-	string loginURL
-	state  string
-	store  sessions.CookieStore
+	conf     *oauth2.Config
+	cred     Credentials
+	loginURL string
+	state    string
+	store    sessions.CookieStore
 )
 
 func randToken() string {
