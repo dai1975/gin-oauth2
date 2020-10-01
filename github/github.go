@@ -111,7 +111,9 @@ func init() {
 }
 
 func Auth() gin.HandlerFunc {
+	fmt.Printf("[Gin-OAuth] fmt: Auth\n")
 	return func(ctx *gin.Context) {
+		fmt.Printf("[Gin-OAuth] fmt: handlerfunc\n")
 		var (
 			ok       bool
 			authUser AuthUser
@@ -151,9 +153,7 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
-		fmt.Printf("[Gin-OAuth] printf\n")
 		glog.Info("[Gin-OAuth] github: get org...\n")
-		fmt.Printf("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
 		glog.Infof("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
