@@ -7,7 +7,7 @@ import (
 	"os"
 	"path"
 
-	"github.com/dai1975/gin-oauth2/github/v3"
+	"github.com/dai1975/gin-oauth2/v3/github"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,8 +22,8 @@ Usage of %s
 `, bin)
 		flag.PrintDefaults()
 	}
-	flag.StringVar(&redirectURL, "redirect", "http://127.0.0.1:8081/auth/", "URL to be redirected to after authorization.")
-	flag.StringVar(&credFile, "cred-file", "./example/github/test-clientid.github.json", "Credential JSON file")
+	flag.StringVar(&redirectURL, "redirect", "http://localhost.example.com:8081/auth/", "URL to be redirected to after authorization.")
+	flag.StringVar(&credFile, "cred-file", "./src/test-clientid.github.json", "Credential JSON file")
 }
 func main() {
 	flag.Parse()
@@ -31,6 +31,7 @@ func main() {
 	scopes := []string{
 		"repo",
 		// You have to select your own scope from here -> https://developer.github.com/v3/oauth/#scopes
+		"read:org",
 	}
 	secret := []byte("secret")
 	sessionName := "goquestsession"
@@ -39,17 +40,23 @@ func main() {
 	github.Setup(redirectURL, "/login", credFile, scopes, secret)
 	router.Use(github.Session(sessionName))
 
+	router.Use(github.Auth())
+	router.GET("/", DefaultHandler)
 	router.GET("/login", github.LoginHandler)
 
 	// protected url group
 	private := router.Group("/auth")
-	private.Use(github.Auth())
+	//private.Use(github.Auth())
 	private.GET("/", UserInfoHandler)
 	private.GET("/api", func(ctx *gin.Context) {
 		ctx.JSON(200, gin.H{"message": "Hello from private for groups"})
 	})
 
 	router.Run("127.0.0.1:8081")
+}
+
+func DefaultHandler(ctx *gin.Context) {
+	ctx.Writer.Write([]byte("<html><title>title</title> <body> hello </body></html>"))
 }
 
 func UserInfoHandler(ctx *gin.Context) {
