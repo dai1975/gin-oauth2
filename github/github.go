@@ -60,7 +60,7 @@ func randToken() string {
 }
 
 func Setup(redirectURL, loginURL0, credFile string, scopes []string, secret []byte) {
-	glog.Info("[Gin-OAuth] github: Setup")
+	glog.Info("[Gin-OAuth] github: Setup\n")
 	store = sessions.NewCookieStore(secret)
 	loginURL = loginURL0
 	var c Credentials
@@ -151,6 +151,7 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
+		glog.Info("[Gin-OAuth] github: get org...\n")
 		glog.Info("[Gin-OAuth] github: scopes: %v\n", conf.Scopes)
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
