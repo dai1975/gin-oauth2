@@ -111,8 +111,7 @@ func Auth() gin.HandlerFunc {
 		retrievedState := session.Get("state")
 		if retrievedState != ctx.Query("state") {
 			if ctx.Request.URL.Path == loginURL {
-				LoginHandler(ctx)
-				ctx.Abort()
+				// pass
 			} else {
 				ctx.Redirect(302, loginURL)
 				ctx.Abort()
