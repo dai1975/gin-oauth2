@@ -27,10 +27,11 @@ type Credentials struct {
 }
 
 var (
-	conf  *oauth2.Config
-	cred  Credentials
-	state string
-	store sessions.CookieStore
+	conf   *oauth2.Config
+	cred   Credentials
+	string loginURL
+	state  string
+	store  sessions.CookieStore
 )
 
 func randToken() string {
@@ -41,8 +42,9 @@ func randToken() string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
-func Setup(redirectURL, credFile string, scopes []string, secret []byte) {
+func Setup(redirectURL, loginURL0, credFile string, scopes []string, secret []byte) {
 	store = sessions.NewCookieStore(secret)
+	loginURL = loginURL0
 	var c Credentials
 	file, err := ioutil.ReadFile(credFile)
 	if err != nil {
@@ -108,7 +110,8 @@ func Auth() gin.HandlerFunc {
 
 		retrievedState := session.Get("state")
 		if retrievedState != ctx.Query("state") {
-			ctx.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session state: %s", retrievedState))
+			ctx.Redirect(302, loginURL)
+			//ctx.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session state: %s", retrievedState))
 			return
 		}
 
