@@ -9,9 +9,9 @@ import (
 	"net/http"
 	"net/url"
 
+	ginoauth2 "github.com/dai1975/gin-oauth2/v3"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
-	"github.com/zalando/gin-oauth2"
 	"golang.org/x/oauth2"
 )
 

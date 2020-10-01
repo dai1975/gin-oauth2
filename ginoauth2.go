@@ -10,7 +10,7 @@
 //     	"github.com/gin-gonic/gin"
 //     	"github.com/golang/glog"
 //     	"github.com/szuecs/gin-glog"
-//     	"github.com/zalando/gin-oauth2"
+//     	"github.com/dai1975/gin-oauth2/v3"
 //     	"golang.org/x/oauth2"
 //     )
 //

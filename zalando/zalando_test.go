@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
+	ginoauth2 "github.com/dai1975/gin-oauth2/v3"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/zalando/gin-oauth2"
 	"golang.org/x/oauth2"
 )
 

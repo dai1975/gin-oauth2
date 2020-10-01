@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
+	ginoauth2 "github.com/dai1975/gin-oauth2/v3"
+	zalando "github.com/dai1975/gin-oauth2/v3/zalando"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 	"github.com/szuecs/gin-glog"
-	"github.com/zalando/gin-oauth2"
-	"github.com/zalando/gin-oauth2/zalando"
 )
 
 var USERS []zalando.AccessTuple = []zalando.AccessTuple{
