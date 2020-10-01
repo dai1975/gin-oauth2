@@ -151,8 +151,10 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
+		fmt.Printf("[Gin-OAuth] printf\n")
 		glog.Info("[Gin-OAuth] github: get org...\n")
-		glog.Info("[Gin-OAuth] github: scopes: %v\n", conf.Scopes)
+		fmt.Printf("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
+		glog.Infof("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
 			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Name, nil)
