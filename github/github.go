@@ -111,9 +111,11 @@ func init() {
 }
 
 func Auth() gin.HandlerFunc {
-	fmt.Printf("[Gin-OAuth] fmt: Auth\n")
+	// ok. fmt.Printf("[Gin-OAuth] fmt: Auth\n")
 	return func(ctx *gin.Context) {
 		fmt.Printf("[Gin-OAuth] fmt: handlerfunc\n")
+		fmt.Printf("[Gin-OAuth] fmt: handlerfunc: path=%s\n", ctx.Request.URL.Path)
+		fmt.Printf("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
 		var (
 			ok       bool
 			authUser AuthUser
@@ -128,6 +130,7 @@ func Auth() gin.HandlerFunc {
 			ctx.Next()
 			return
 		}
+		fmt.Printf("[Gin-OAuth] fmt: check session...ok\n")
 
 		retrievedState := session.Get("state")
 		if retrievedState != ctx.Query("state") {
@@ -140,6 +143,7 @@ func Auth() gin.HandlerFunc {
 			}
 			return
 		}
+		fmt.Printf("[Gin-OAuth] fmt: check state...ok\n")
 
 		// TODO: oauth2.NoContext -> context.Context from stdlib
 		tok, err := conf.Exchange(oauth2.NoContext, ctx.Query("code"))
@@ -147,14 +151,14 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to do exchange: %v", err))
 			return
 		}
+		fmt.Printf("[Gin-OAuth] fmt: exchange...ok\n")
 		client := github.NewClient(conf.Client(oauth2.NoContext, tok))
 		user, _, err = client.Users.Get(oauth2.NoContext, "")
 		if err != nil {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
-		glog.Info("[Gin-OAuth] github: get org...\n")
-		glog.Infof("[Gin-OAuth] github: scopes: %s\n", conf.Scopes)
+		glog.Info("[Gin-OAuth] get user...ok\n")
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
 			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Name, nil)
