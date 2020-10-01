@@ -171,6 +171,8 @@ func Auth() gin.HandlerFunc {
 				return
 			}
 			fmt.Printf("[Gin-OAuth] get orgs...succeeded\n")
+			fmt.Printf("[Gin-OAuth] get orgs...len=%d\n", len(orgs_))
+			fmt.Printf("[Gin-OAuth] get orgs...orgs=%s\n", orgs_)
 			orgs = make([]string, len(orgs_))
 			for i, o := range orgs_ {
 				fmt.Printf("[Gin-OAuth] get orgs...%d %s\n", i, o.Name)
