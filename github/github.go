@@ -88,6 +88,7 @@ func Session(name string) gin.HandlerFunc {
 func LoginHandler(ctx *gin.Context) {
 	state = randToken()
 	session := sessions.Default(ctx)
+	session.Delete("ginoauthgh")
 	session.Set("state", state)
 	session.Save()
 	ctx.Writer.Write([]byte("<html><title>Golang Github</title> <body> <a href='" + GetLoginURL(state) + "'><button>Login with GitHub!</button> </a> </body></html>"))
@@ -126,6 +127,7 @@ func Auth() gin.HandlerFunc {
 		session := sessions.Default(ctx)
 		mysession := session.Get("ginoauthgh")
 		if authUser, ok = mysession.(AuthUser); ok {
+			fmt.Printf("[Gin-OAuth] fmt: session already have authUser\n")
 			ctx.Set("user", authUser)
 			ctx.Next()
 			return
