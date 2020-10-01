@@ -163,7 +163,7 @@ func Auth() gin.HandlerFunc {
 		glog.Info("[Gin-OAuth] get user...ok\n")
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
-			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Name, nil)
+			orgs_, _, err := client.Organizations.List(oauth2.NoContext, string(*user.ID), nil)
 			if err != nil {
 				ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 				return
