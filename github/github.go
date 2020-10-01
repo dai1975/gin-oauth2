@@ -160,19 +160,23 @@ func Auth() gin.HandlerFunc {
 			ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
 			return
 		}
-		glog.Info("[Gin-OAuth] get user...ok\n")
+		fmt.Printf("[Gin-OAuth] get user...ok\n")
 		var orgs []string
 		if containsAny(conf.Scopes, []string{"read:org", "write:org", "admin:org"}) {
+			fmt.Printf("[Gin-OAuth] get orgs...scoped\n")
 			orgs_, _, err := client.Organizations.List(oauth2.NoContext, *user.Login, nil)
 			if err != nil {
-				ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get user: %v", err))
+				ctx.AbortWithError(http.StatusBadRequest, fmt.Errorf("Failed to get organizations: %v", err))
 				return
 			}
+			fmt.Printf("[Gin-OAuth] get orgs...succeeded\n")
 			orgs = make([]string, len(orgs_))
 			for i, o := range orgs_ {
+				fmt.Printf("[Gin-OAuth] get orgs...%d %s\n", i, o.Name)
 				orgs[i] = *o.Name
 			}
 		}
+		fmt.Printf("[Gin-OAuth] get orgs...ok\n")
 
 		// save userinfo, which could be used in Handlers
 		authUser = AuthUser{
