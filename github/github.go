@@ -109,7 +109,7 @@ func Auth() gin.HandlerFunc {
 		}
 
 		retrievedState := session.Get("state")
-		if retrievedState != ctx.Query("state") {
+		if retrievedState != ctx.Query("state") && ctx.Request.URL.Path != loginURL {
 			ctx.Redirect(302, loginURL)
 			ctx.Abort()
 			//ctx.AbortWithError(http.StatusUnauthorized, fmt.Errorf("Invalid session state: %s", retrievedState))
